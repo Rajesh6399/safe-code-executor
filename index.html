@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Safe Code Executor</title>
+</head>
+<body>
+  <h2>Safe Code Executor – Python</h2>
+ 
+  <p>Enter Python code:</p>
+  <textarea id="code" rows="10" cols="70">print("Hello from the browser!")</textarea>
+  <br><br>
+ 
+  <button onclick="runCode()">Run</button>
+ 
+  <h3>Result</h3>
+  <pre id="result"></pre>
+ 
+  <script>
+    async function runCode() {
+      const code = document.getElementById('code').value;
+      const resultBox = document.getElementById('result');
+      resultBox.textContent = "Running...";
+ 
+      try {
+        const response = await fetch("http://127.0.0.1:5000/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: code })
+        });
+ 
+        const data = await response.json();
+ 
+        resultBox.textContent =
+          "Output:\n" + (data.output || "") +
+          "\n\nErrors:\n" + (data.errors || "");
+      } catch (err) {
+        resultBox.textContent = "Failed to call API: " + err;
+      }
+    }
+  </script>
+</body>
+</html>
